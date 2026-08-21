@@ -1,0 +1,33 @@
+name: Register Autopilot Device
+
+on:
+  workflow_dispatch:
+    inputs:
+      group_tag:
+        description: "Autopilot Group Tag"
+        required: true
+        type: string
+      assigned_user:
+        description: "Assigned User (optional)"
+        required: false
+        type: string
+
+jobs:
+  register-device:
+    runs-on: windows-latest
+
+    env:
+      SECRET_ID: ${{ secrets.SECRET_ID }}
+      APP_ID: ${{secrets.APP_ID}}
+      TENANT_ID: ${{secrets.TENANT_ID}}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Autopilot Registration
+        shell: powershell
+        run: |
+          .\Register-AutopilotDevice.ps1 `
+            -GroupTag "${{ inputs.group_tag }}" `
+            -AssignedUser "${{ inputs.assigned_user }}"
